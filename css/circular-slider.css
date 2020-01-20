@@ -1,0 +1,21 @@
+.angle-picker .rs-range-color  {
+    background-color: #33B5E5;
+}
+.angle-picker .rs-path-color  {
+    background-color: #C2E9F7;
+}
+.angle-picker .rs-handle  {
+    background-color: #C2E9F7;
+    padding: 7px;
+    border: 2px solid #C2E9F7;
+}
+.angle-picker .rs-handle.rs-focus  {
+    border-color: #33B5E5;
+}
+.angle-picker .rs-handle:after  {
+    border-color: #33B5E5;
+    background-color: #33B5E5;
+}
+.angle-picker .rs-border  {
+    border-color: transparent;
+}

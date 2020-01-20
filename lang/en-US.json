@@ -1,0 +1,28 @@
+{
+  "mqtt-connection-title": "Connection",
+  "mqtt-connection-address": "Address:",
+  "mqtt-connection-port": "Port:",
+  "mqtt-connection-name": "Device Name:",
+  "mqtt-connection-connect": "Connect",
+
+  "button-id": "ID:",
+  "button-id-help": "The ID of the button",
+  "button-color": "Button Color:",
+  "button-command-label": "Command",
+  "button-command-dmx": "DMX",
+  "button-command-dmx-label": "Action",
+  "button-command-dmx-raw": "Raw",
+  "button-command-dmx-pan": "Pan",
+  "button-command-dmx-tilt": "Tilt",
+  "button-command-dmx-rgb": "RGB",
+  "button-command-dmx-rgbw": "RGBW",
+  "button-command-dmx-channel": "Channel",
+  "button-command-dmx-value": "Value",
+  "button-command-dmx-focus-channel": "Focus Channel",
+  "button-command-wait": "Wait",
+
+  "button-command-error-missing-dmx-type": "Please, choose an action type",
+  "button-command-error-missing-dmx-focus-channel": "Please, choose the channel of the focus",
+  "button-command-error-missing-dmx-channel": "Please, choose the channel to use",
+  "button-command-error-missing-dmx-value": "Please, choose the value to set"
+}

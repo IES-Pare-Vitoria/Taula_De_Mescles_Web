@@ -1,0 +1,16 @@
+.button-pad {
+    border-radius: 30%;
+    border-color: #000000;
+    border-width: medium;
+    background-color: white;
+    /*margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 2%;*/
+    margin-left: 3%;
+    margin-right: 3%;
+    margin-top: 5%;
+    width: 5vw;
+    height: 5vw;
+
+    display: inline-block;
+}
