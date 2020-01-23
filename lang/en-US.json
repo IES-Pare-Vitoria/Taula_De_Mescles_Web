@@ -1,4 +1,6 @@
 {
+  "action-confirm": "Confirm",
+
   "mqtt-connection-title": "Connection",
   "mqtt-connection-address": "Address:",
   "mqtt-connection-port": "Port:",

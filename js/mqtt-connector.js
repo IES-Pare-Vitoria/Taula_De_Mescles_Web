@@ -8,6 +8,33 @@ const mqttNameField = $("#mqttConnectionNameInput");
 const mqttConnectionCard = $("#mqttConnectionCard");
 const mqttFetchingSpinner = $("#mqttFetchingSpinner");
 
+function updateIP(ip){
+    deviceIp = ip;
+
+    const url = `http://${ip}/get/all_listeners`;
+    $.ajax({
+        url: url,
+        success: function (result) {
+            try {
+                const json = JSON.parse(result);
+                const buttons = json.buttons;
+                if (buttons == null)
+                    console.error("Buttons not found!");
+                else {
+                    buttonsDatas = [];
+                    for (let i = 0; i < buttons.length; i++) {
+                        buttonsDatas[i] = buttons[i].button_data;
+                    }
+                    loadButtons();
+                }
+            }catch (e) {
+                console.error(e);
+                console.warn("JSON: " + result)
+            }
+        }
+    });
+}
+
 function mqtt_setLoading(loading = true) {
     mqttAddressField.prop("disabled", loading);
     mqttPortField.prop("disabled", loading);
@@ -54,30 +81,7 @@ function mqtt_onMessageArrived(msg) {
 
     const ip = json.ip;
     if (ip != null) {
-        deviceIp = ip;
-
-        const url = `http://${ip}/get/listeners`;
-        $.ajax({
-            url: url,
-            success: function (result) {
-                try {
-                    const json = JSON.parse(result);
-                    const buttons = json.buttons;
-                    if (buttons == null)
-                        console.error("Buttons not found!");
-                    else {
-                        buttonsDatas = [];
-                        for (let i = 0; i < buttons.length; i++) {
-                            buttonsDatas[i] = buttons[i].button_data;
-                        }
-                        loadButtons();
-                    }
-                }catch (e) {
-                    console.error(e);
-                    console.warn("JSON: " + result)
-                }
-            }
-        });
+        updateIP(ip);
     }
 }
 
