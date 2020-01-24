@@ -8,7 +8,7 @@ function loadButtons() {
 
     for(let c = 0; c < buttonsDatas.length; c++){
         const button = buttonsDatas[c];
-        controlButtonsCard.append(`<button class="button-pad" data-id="${c}" style="background-color: ${button.color};"></button>`);
+        controlButtonsCard.append(`<button class="button-pad" style="--color: #${colorAddZerosPrefix(button.color)};" data-id="${c}"></button>`);
     }
     controlButtonsCard.show();
 

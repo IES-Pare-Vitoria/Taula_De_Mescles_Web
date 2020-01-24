@@ -8,7 +8,7 @@ function reloadUIListeners() {
 
 function hexToRgb(hex) {
     let color = hex;
-    if(!hex.startsWith("#"))
+    if (!hex.startsWith("#"))
         color = "#" + hex;
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
     return result ? {
@@ -18,12 +18,19 @@ function hexToRgb(hex) {
     } : null;
 }
 
+function colorAddZerosPrefix(color){
+    if(color.length <= 1) return "ffffff";
+    const addZeros = 6 - color.length;
+    return "0".repeat(addZeros) + color;
+}
+
 $(function () {
     const sortable = $(".sortable");
     sortable.sortable();
     sortable.disableSelection();
 
 
+    const buttonUpdateId = $("#buttonUpdateId");
     const buttonUpdateCommand = $("#buttonUpdateCommand");
     const buttonUpdateCommandDMX = $("#buttonUpdateCommandDMX");
     const buttonUpdateCommandDMXType = $("#buttonUpdateCommandDMXType");
@@ -65,10 +72,12 @@ $(function () {
     }
 
     $("select").on("change", function () {
-        this.classList.remove("is-invalid");
+        if (this.classList != null && this.classList.contains("is-invalid"))
+            $(this).removeClass("is-invalid");
     });
     $("input").on("change", function () {
-        this.classList.remove("is-invalid");
+        if (this.classList != null && this.classList.contains("is-invalid"))
+            $(this).removeClass("is-invalid");
     });
 
     buttonUpdateCommand.on("change", function () {
@@ -200,22 +209,100 @@ $(function () {
     updateSendButton.on("click", function (e) {
         e.preventDefault();
 
-        const children = $(buttonUpdateCommandCommandsList.children());
-        for(let i in children){
-            if(!children.hasOwnProperty(i)) return;
-            const item = $(children[i]);
-            const fullCommand = item.attr("data-command");
-            if(fullCommand == null)
-                return;
-            console.warn("Full command:", fullCommand);
-            const commands = fullCommand.split("\n");
-            for(const c in commands){
-                if(!commands.hasOwnProperty(c)) return;
-                const command = commands[c];
-                // TODO: Send command add request
-                console.warn(command);
-            }
+        buttonUpdateCard.hide();
+
+        if (deviceIp == null) {
+            console.error("Device IP not stored");
+            return false
         }
+
+        const buttonId = buttonUpdateId.val();
+        const url = `http://${deviceIp}/config/button/clear`;
+        $.ajax({
+            url: url,
+            type: "get",
+            data: {
+                id: buttonId
+            },
+            success: function (response) {
+                console.warn("result: ", response.toString());
+                try {
+                    const res = response.toString();
+                    if (res == null)
+                        console.error("res is null");
+                    const code = JSON.parse(res);
+
+                    const result = code.result;
+                    if (result != null) {
+                        console.log(`Deleted config for button ${buttonId} correctly`);
+
+                        const color = buttonUpdateCommandDMXColor.val().replace("#", "");
+                        const colorInt = parseInt(color, 16);
+                        $.ajax({
+                            url: url,
+                            type: "get",
+                            data: {
+                                id: buttonId,
+                                color: colorInt
+                            },
+                            success: function (response) {
+                                try {
+                                    const code = JSON.parse(response);
+                                    const result = code.result;
+                                    if (result != null)
+                                        console.log("Set color", colorInt, "HEX:" + color);
+                                    else
+                                        console.error("Couldn't set color", colorInt, ":", response)
+                                } catch (e) {
+                                    console.error(e);
+                                    console.warn("JSON: " + response)
+                                }
+                            }
+                        });
+
+                        const children = $(buttonUpdateCommandCommandsList.children());
+                        for (let i in children) {
+                            if (!children.hasOwnProperty(i)) return;
+                            const item = $(children[i]);
+                            const fullCommand = item.attr("data-command");
+                            if (fullCommand == null)
+                                return;
+                            console.warn("Full command:", fullCommand);
+                            const commands = fullCommand.split("\n");
+                            for (const c in commands) {
+                                if (!commands.hasOwnProperty(c)) return;
+                                const command = commands[c];
+                                const url = `http://${deviceIp}/config/button/command`;
+                                $.ajax({
+                                    url: url,
+                                    type: "get",
+                                    data: {
+                                        id: buttonId,
+                                        command: command
+                                    },
+                                    success: function (response) {
+                                        try {
+                                            const code = JSON.parse(response);
+                                            const result = code.result;
+                                            if (result != null)
+                                                console.log("Added command", command);
+                                            else
+                                                console.error("Couldn't add command", command, ":", response)
+                                        } catch (e) {
+                                            console.error(e);
+                                            console.warn("JSON: " + response)
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    } else console.error(`An error occurred while clearing button #${buttonId}`);
+                } catch (e) {
+                    console.error(e);
+                    console.warn("JSON: " + response)
+                }
+            }
+        });
 
         return false;
     });

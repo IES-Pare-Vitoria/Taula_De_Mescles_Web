@@ -25,6 +25,7 @@ function updateIP(ip){
                     for (let i = 0; i < buttons.length; i++) {
                         buttonsDatas[i] = buttons[i].button_data;
                     }
+                    console.warn("Buttons:", buttonsDatas);
                     loadButtons();
                 }
             }catch (e) {
